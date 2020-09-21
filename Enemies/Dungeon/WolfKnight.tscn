@@ -1,0 +1,201 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://Enemies/DungeonEnemiesSprites.tres" type="Texture" id=1]
+[ext_resource path="res://Enemies/Dungeon/WolfKnight.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Hurtbox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Utils/Stats.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Utils/PlayerDetectionZone.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Utils/Hitbox.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Utils/SoftCollision.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Utils/WhiteColor.shader" type="Shader" id=8]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Attack"
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 32, 33, 34, 35 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Hitbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.2 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "finish_attack"
+} ]
+}
+
+[sub_resource type="Animation" id=2]
+length = 0.9
+loop = true
+step = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 24, 25, 26 ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.3
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 30, 31, 24 ]
+}
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 7.62605
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = ExtResource( 8 )
+shader_param/active = false
+
+[sub_resource type="CapsuleShape2D" id=6]
+radius = 7.0
+height = 6.0
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 72.0
+
+[sub_resource type="CapsuleShape2D" id=8]
+radius = 7.0
+height = 8.0
+
+[sub_resource type="CircleShape2D" id=9]
+radius = 6.0
+
+[sub_resource type="Animation" id=10]
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true, false ]
+}
+
+[node name="WolfKnight" type="KinematicBody2D"]
+collision_layer = 0
+script = ExtResource( 2 )
+ACCELERATION = 375
+MAX_SPEED = 75
+
+[node name="Stats" parent="." instance=ExtResource( 4 )]
+max_health = 4
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2( 0, -8 )
+color = Color( 0, 0, 0, 0.345098 )
+polygon = PoolVector2Array( -6, 6, 6, 6, 8, 8, 6, 10, -6, 10, -8, 8 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Attack = SubResource( 1 )
+anims/Idle = SubResource( 2 )
+anims/Walk = SubResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2( 0, -6 )
+shape = SubResource( 4 )
+
+[node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 5 )
+position = Vector2( 0, -16 )
+texture = ExtResource( 1 )
+vframes = 7
+hframes = 12
+frame = 35
+
+[node name="Hurtbox" parent="." instance=ExtResource( 3 )]
+visible = false
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2( 0, -9 )
+shape = SubResource( 6 )
+
+[node name="PlayerDetectionZone" parent="." instance=ExtResource( 5 )]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="PlayerDetectionZone" index="0"]
+modulate = Color( 1, 1, 1, 0.470588 )
+shape = SubResource( 7 )
+
+[node name="Hitbox" parent="." instance=ExtResource( 6 )]
+visible = false
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" parent="Hitbox" index="0"]
+position = Vector2( 15, -10 )
+shape = SubResource( 8 )
+
+[node name="SoftCollision" parent="." instance=ExtResource( 7 )]
+visible = false
+
+[node name="CollisionShape2D" parent="SoftCollision" index="0"]
+position = Vector2( 0, -6 )
+shape = SubResource( 9 )
+
+[node name="ShaderPlayer" type="AnimationPlayer" parent="."]
+anims/Hurt = SubResource( 10 )
+[connection signal="no_health" from="Stats" to="." method="_on_Stats_no_health"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
+
+[editable path="Hurtbox"]
+
+[editable path="PlayerDetectionZone"]
+
+[editable path="Hitbox"]
+
+[editable path="SoftCollision"]

@@ -1,0 +1,241 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://Enemies/EnemySprites.png" type="Texture" id=1]
+[ext_resource path="res://Enemies/Forest/BigShrum.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Hurtbox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Utils/Stats.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Utils/PlayerDetectionZone.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Utils/Hitbox.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Utils/SoftCollision.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Utils/WhiteColor.shader" type="Shader" id=8]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Attack"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 160, 165, 161, 162, 163 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.4, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "gas_cloud"
+}, {
+"args": [  ],
+"method": "finish_attack"
+} ]
+}
+
+[sub_resource type="Animation" id=2]
+length = 1.6
+loop = true
+step = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 0.8, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 160, 161, 162, 161 ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.8
+loop = true
+step = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 164, 165, 166, 167 ]
+}
+
+[sub_resource type="ShaderMaterial" id=4]
+resource_local_to_scene = true
+shader = ExtResource( 8 )
+shader_param/active = false
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 8.24621
+
+[sub_resource type="CapsuleShape2D" id=6]
+height = 4.0
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 80.0
+
+[sub_resource type="CircleShape2D" id=8]
+radius = 9.0
+
+[sub_resource type="CircleShape2D" id=9]
+radius = 8.0
+
+[sub_resource type="Animation" id=10]
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true, false ]
+}
+
+[node name="BigShrum" type="KinematicBody2D"]
+collision_layer = 0
+script = ExtResource( 2 )
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2( 0, -8 )
+color = Color( 0, 0, 0, 0.345098 )
+polygon = PoolVector2Array( -4, 6, 4, 6, 6, 8, 4, 10, -4, 10, -6, 8 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Attack = SubResource( 1 )
+anims/Idle = SubResource( 2 )
+anims/Walk = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 4 )
+position = Vector2( 0, -16 )
+texture = ExtResource( 1 )
+vframes = 16
+hframes = 16
+frame = 160
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2( 0, -6 )
+shape = SubResource( 5 )
+
+[node name="Hurtbox" parent="." instance=ExtResource( 3 )]
+visible = false
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2( 0, -11 )
+shape = SubResource( 6 )
+
+[node name="Stats" parent="." instance=ExtResource( 4 )]
+max_health = 8
+
+[node name="PlayerDetectionZone" parent="." instance=ExtResource( 5 )]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="PlayerDetectionZone" index="0"]
+modulate = Color( 1, 1, 1, 0.470588 )
+shape = SubResource( 7 )
+
+[node name="Hitbox" parent="." instance=ExtResource( 6 )]
+visible = false
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" parent="Hitbox" index="0"]
+position = Vector2( 0, -8 )
+shape = SubResource( 8 )
+
+[node name="SoftCollision" parent="." instance=ExtResource( 7 )]
+visible = false
+
+[node name="CollisionShape2D" parent="SoftCollision" index="0"]
+position = Vector2( 0, -6 )
+shape = SubResource( 9 )
+
+[node name="ShaderPlayer" type="AnimationPlayer" parent="."]
+anims/Hurt = SubResource( 10 )
+
+[node name="BasePoints" type="Node2D" parent="."]
+
+[node name="P1" type="Position2D" parent="BasePoints"]
+position = Vector2( 32, 0 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P5" type="Position2D" parent="BasePoints"]
+position = Vector2( 23, -23 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P2" type="Position2D" parent="BasePoints"]
+position = Vector2( 0, -32 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P6" type="Position2D" parent="BasePoints"]
+position = Vector2( -23, -23 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P3" type="Position2D" parent="BasePoints"]
+position = Vector2( -32, 0 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P7" type="Position2D" parent="BasePoints"]
+position = Vector2( -23, 23 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P4" type="Position2D" parent="BasePoints"]
+position = Vector2( 0, 32 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="P8" type="Position2D" parent="BasePoints"]
+position = Vector2( 23, 23 )
+__meta__ = {
+"_gizmo_extents_": 4.0
+}
+
+[node name="Timer" type="Timer" parent="."]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_Hurtbox_area_entered"]
+[connection signal="no_health" from="Stats" to="." method="_on_Stats_no_health"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+
+[editable path="Hurtbox"]
+
+[editable path="PlayerDetectionZone"]
+
+[editable path="Hitbox"]
+
+[editable path="SoftCollision"]

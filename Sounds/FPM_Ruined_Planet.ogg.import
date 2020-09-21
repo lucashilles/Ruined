@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/FPM_Ruined_Planet.ogg-f5ccb75cdcc37fc405eea94d8485de77.oggstr"
+
+[deps]
+
+source_file="res://Sounds/FPM_Ruined_Planet.ogg"
+dest_files=[ "res://.import/FPM_Ruined_Planet.ogg-f5ccb75cdcc37fc405eea94d8485de77.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
